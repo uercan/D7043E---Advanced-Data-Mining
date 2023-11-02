@@ -1,0 +1,179 @@
+\documentclass{article}
+\usepackage{multicol}
+\usepackage[utf8]{inputenc}
+\usepackage[default]{raleway} 
+\renewcommand{\thefootnote}{\textit{\alph{footnote}}}
+                                %Marks footnotes with letters, so they aren't confused with citations
+\usepackage{float}              %Ensures images/tables appear                                   where you want em
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage[english]{babel}     % for proper word breaking at line ends
+\usepackage[a4paper, left=2.5cm, right=2.5cm, top=2.5cm, bottom=2.5cm]{geometry}
+                                % for page size and margin settings
+\usepackage{graphicx}           % for ?
+\usepackage{amsmath,amssymb}    % for better equations
+\usepackage{amsthm}             % for better theorem styles
+\usepackage{mathtools}          % for greek math symbol formatting
+\usepackage{enumitem}           % for control of 'enumerate' numbering
+\usepackage{listings}           % for control of 'itemize' spacing
+\usepackage{xargs}                      % Use more than one optional parameter in a new commands
+\usepackage[pdftex,dvipsnames]{xcolor}  % Coloured text etc.
+\setlength{\parindent}{0pt} % no indents 
+\usepackage[colorinlistoftodos,prependcaption,textsize=tiny]{todonotes}
+\newcommandx{\unsure}[2][1=]{\todo[linecolor=red,backgroundcolor=red!25,bordercolor=red,#1]{#2}}
+\newcommandx{\change}[2][1=]{\todo[linecolor=blue,backgroundcolor=blue!25,bordercolor=blue,#1]{#2}}
+\newcommandx{\info}[2][1=]{\todo[linecolor=OliveGreen,backgroundcolor=OliveGreen!25,bordercolor=OliveGreen,#1]{#2}}
+\newcommandx{\improvement}[2][1=]{\todo[linecolor=Plum,backgroundcolor=Plum!25,bordercolor=Plum,#1]{#2}}
+\newcommandx{\thiswillnotshow}[2][1=]{\todo[disable,#1]{#2}}
+\usepackage{hyperref}    % page numbers and '\ref's become clickable
+\usepackage{tabularx}
+\usepackage[sorting=none]{biblatex}
+\usepackage{csquotes}
+\usepackage{xcolor}
+\newcommand\markRed[1]{\textcolor{red}{#1}}
+\pdfstringdefDisableCommands{%
+  \def\color{color}%
+  \def\texttt#1{<#1>}%
+}
+\addbibresource{references.bib}
+
+
+\title{D7043E Project \par U-Net: Convolutional Networks for Biomedical Image Segmentation, Ronneberger et al. (2015) Analysis}
+
+\author{Group Alpha: Umuthan Ercan, Amirhossein Nayebiastaneh}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+%\noindent\makebox[\linewidth]{\rule{\paperwidth}{0.4pt}}
+
+\section{Introduction}
+In recent years, the field of deep learning has witnessed remarkable advancements, particularly in the domain of biomedical image analysis. The emergence of convolutional networks, characterized by their exceptional performance in various visual recognition tasks, has been a pivotal development in this arena \cite{krizhevsky2012imagenet}. However, these achievements often rely on vast training datasets, which are not always readily available in biomedical applications. The article "U-Net: Convolutional Networks for Biomedical Image Segmentation" by Ronneberger, Fischer, and Brox addresses this challenge by introducing a novel network architecture and training strategy that capitalizes on the efficient utilization of annotated samples through data augmentation \cite{ronneberger2015unet}. This paper explores the U-Net architecture—a fully convolutional network, adept at precise localization while maintaining computational efficiency. It presents a compelling case, demonstrating how this architecture can be effectively trained with minimal annotated images, thereby surpassing prior methods in biomedical image segmentation, including neuronal structures in electron microscopic stacks and cell tracking in transmitted light microscopy images. In this analysis, we delve into the key components of the U-Net architecture, unravel its training methodology, discuss its implications, and highlight the significance of its contributions to the field.
+
+
+\section{Methodology}
+The U-Net architecture, introduced in this study, serves as the backbone of the methodology. It's important to note that this architecture consists of two main parts: a contracting path and an expanding path.
+
+The contracting path is like a funnel. It takes the input image and processes it through multiple layers of operations. These operations help the network understand the bigger picture, capturing the context of the image. Think of it as zooming out to see the whole forest before focusing on individual trees.
+
+On the other hand, the expanding path is like zooming back in. It takes the context information learned from the contracting path and uses it to make precise predictions for each pixel in the image. This is crucial for tasks like biomedical image segmentation, where we need to label every pixel correctly.
+
+To make the architecture even more effective, the authors made sure that the expanding path has access to lots of context information. This means that the network can consider a wide area around each pixel when making predictions. But here's the clever part: it does this without becoming computationally expensive.
+
+The U-Net doesn't rely on fully connected layers, which can make networks slow and memory-hungry. Instead, it uses what's called "valid convolutions," meaning it only uses information that's available in the input image. This way, it's faster and more memory-efficient.
+
+Now, let's talk about training. Since there aren't always tons of labeled images available in biomedical tasks, the authors used a technique called data augmentation. This involves creating variations of the existing training images, like stretching or squeezing them a bit. It's like giving the network more examples to learn from, even if they're just slight variations.
+
+Additionally, the authors used weighted loss functions. These functions give more importance to pixels near the borders of objects, which helps the network handle situations where objects touch each other.
+
+In summary, the U-Net methodology combines a smart architecture, efficient training techniques like data augmentation, and weighted loss functions to achieve precise image segmentation, even with limited training data.
+
+
+\section{Experimental Results}
+Now, let's see how well this U-Net approach actually works in practice. The authors tested it on various tasks in biomedical image analysis.
+
+First, they applied it to the segmentation of neuronal structures in electron microscopic images. These are incredibly detailed images, and labeling them manually is a time-consuming task. The U-Net showed that it could handle this job with great accuracy. It outperformed previous methods, even when there were very few training images available.
+
+Next, they tried the U-Net on cell segmentation in light microscopy images. Imagine trying to separate individual cells in a crowded image where they touch each other. This is a challenging task, but the U-Net managed it exceptionally well. It performed better than other algorithms, even on the most difficult datasets.
+
+One important thing to note is that the U-Net doesn't just work well; it's also efficient. It can process a 512x512 pixel image in less than a second on a powerful graphics card (GPU). This speed is crucial for practical applications, especially when dealing with large images.
+
+These results show that the U-Net architecture is not only accurate but also practical for real-world biomedical image analysis tasks. It's a promising tool for researchers and professionals in this field.
+
+\section{Network Architecture}
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.65]{unetarch.jpg}
+    \caption{U-Net Network Architecture \cite{ronneberger2015unet}}
+\end{figure}
+The U-Net architecture is divided into four main parts:
+\subsection{Contracting part}
+The contracting part is responsible for reducing the spatial dimensions of the input image while capturing high-level features. It comprises four down-sampling steps, each of which consists of the following 4 down-sampling steps. Each down-sampling step contains:
+
+
+\begin{itemize}
+\item 3x3 convolution $\downarrow $
+\item Rectified Linear Unit (ReLU) activation $\downarrow $
+\item 3x3 convolution $\downarrow $
+\item ReLU activation $\downarrow $
+\item 2x2 max pool (down-sampling by factor of 2). $\downarrow $
+\end{itemize}
+\par In each down-sampling step, the number of feature channels is doubled, progressing as follows:
+\par -64 feature channels
+\par -128 feature channels
+\par -256 feature channels 
+\par -512 feature channels
+
+\subsection{Connecting part}
+The connecting part serves as a bridge between the contracting and expansive parts. It contains a single step without down-sampling and includes the following operations:
+\begin{itemize}
+\item 3x3 convolution 
+\item ReLU activation 
+\item 3x3 convolution 
+\item ReLU activation 
+\end{itemize}
+
+\subsection{Expansive part}
+The expansive part is responsible for gradually increasing the spatial dimensions of the feature maps and restoring finer details. It consists of four up-sampling steps, each of which includes the following operations:
+\begin{itemize}
+\item 3x3 convolution $\uparrow $
+\item ReLU activation $\uparrow $
+\item 3x3 convolution $\uparrow $
+\item ReLU activation $\uparrow $
+\end{itemize}
+
+\par Importantly, each up-sampling layer reduces the number of feature channels by half, helping to maintain a balanced architecture.
+\par -512 feature channels
+\par -256 feature channels
+\par -128 feature channels
+\par -64 feature channels
+
+\subsubsection{Up-Sampling in U-Net}
+Up-sampling in U-Net is achieved through a technique known as Transposed Convolution or "up-convolution." This operation helps restore spatial dimensions lost during the contracting phase and is crucial for generating detailed segmentation masks. Transposed Convolution effectively up-scales feature maps.
+
+For a more in-depth understanding of Transposed Convolution, you can refer to the following resources:
+
+-Video Explanation of Transposed Convolution \cite{transposedconv}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.40]{transconv.jpg}
+    \caption{-Explanation of Transposed Convolution from Dive into Deep Learning
+\cite{modernconv}}
+\label{fig:noTicks}
+\end{figure}
+
+
+\par Also, the cropping operation is essential during concatenation due to the loss of border pixels resulting from convolution operations.
+
+\subsection{Final layer}
+The final layer of the U-Net architecture consists of a 1x1 convolution operation. This layer maps each 64-component feature map to the desired number of classes, which is typically 2 for binary segmentation tasks.
+
+
+
+\section{Data Augmentation and Training}
+
+Data augmentation plays a crucial role in the success of the U-Net architecture, especially when dealing with limited annotated training samples. Since biomedical image segmentation tasks often suffer from a shortage of training data, U-Net relies on extensive data augmentation techniques. One notable augmentation strategy employed in this architecture is the application of elastic deformations to the available training images. These deformations simulate realistic variations in tissue and enhance the network's ability to learn invariance to such transformations. Remarkably, the network doesn't require exposure to these transformations in the annotated image corpus. The use of data augmentation, such as elastic deformations, has been demonstrated to be highly effective in biomedical segmentation tasks, where capturing the variability in tissue deformation is essential for accurate segmentation. This approach not only improves the network's robustness but also mitigates the need for an excessively large annotated dataset.
+
+\section{Limitations}
+\begin{itemize}
+\item The implementation of evaluation metrics in biomedical segmentation tasks can be more challenging than in other visual recognition tasks. This is primarily due to the requirement for precise pixel-level localization, which demands not only accurate segmentation but also an understanding of the spatial relationships within the segmented regions. Therefore, selecting appropriate evaluation metrics that effectively capture these nuances remains a significant challenge in the field.
+
+\item Biomedical segmentation tasks often suffer from a scarcity of annotated data for training. Given the data-driven nature of deep learning, having an ample dataset is crucial for achieving high model performance. While U-Net leverages data augmentation techniques to address this limitation, the availability of diverse and representative training data remains a bottleneck in the broader adoption of U-Net in biomedical applications. Furthermore, the quality and consistency of annotations in medical images can vary, introducing additional challenges.
+
+\item Computational efficiency can be a concern when deploying U-Net models in different hardware configurations. The architecture's extensive depth and parameter count, particularly in scenarios with high-resolution inputs, can strain computational resources, making it less accessible for resource-constrained environments or real-time applications. Achieving a balance between model complexity and computational efficiency is an ongoing challenge, as optimizing U-Net for various hardware platforms and deployment scenarios requires careful consideration.
+\end{itemize}
+
+\par These limitations underscore the need for ongoing research and development in the field of biomedical image segmentation, aiming to address data limitations, refine evaluation methodologies, and optimize the efficiency of deep learning architectures like U-Net for practical deployment in healthcare and related domains.
+
+\section{Conclusion}
+
+The U-Net architecture, introduced by Ronneberger et al. in 2015, stands as a potent tool for image segmentation tasks across various domains. Its distinctive U-shaped design, comprising contracting and expansive paths, excels in capturing intricate details and has found extensive use in fields like medical image analysis. U-Net's strength lies in its adaptability through data augmentation, although considerations for limited training data and computational efficiency are crucial. As technology advances, U-Net and its variations are expected to continue shaping the landscape of computer vision, providing a solid foundation for precise image segmentation in diverse applications.
+
+\newpage
+\printbibliography
+
+\end{document}
+
+
